@@ -1,5 +1,6 @@
 package com.demo.core.base;
 
+import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
 import com.demo.core.allure.AllureLogger;
 import com.demo.core.config.SelenideConfig;
@@ -10,14 +11,15 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
 
 @Listeners({TestListener.class})
-public class BaseTest extends AllureLogger {
+public class HeadlessBase extends AllureLogger {
 
     @BeforeMethod(alwaysRun = true, description = "Opening web browser...")
     public void setUp() throws Exception {
-
         logInfo("Creating web driver configuration...");
-        SelenideConfig.createBrowserConfig(System.getProperty("selenide.browser", "chrome"));
-        configLog(this.getClass().getSimpleName());
+
+        Configuration.browser = System.getProperty("selenide.browser", "chrome");
+        Configuration.headless = Boolean.parseBoolean(System.getProperty("selenide.headless", "true"));
+        Configuration.timeout = 10000;
 
         logInfo("Open browser...");
         Selenide.open(Constants.URL);
